@@ -1,0 +1,19 @@
+{% extends 'faceit_ml/base.html' %}
+
+{% block content %}
+
+    <p>Team: {{ team }}</p>
+
+    <p>Players:</p>
+    <ul>
+    {% for player in players %}
+        <li>
+            <p>{{ player.date_added|date:'M d, Y H:i' }}</p>
+            <p>{{ player.nickname }}</p>
+        </li>
+    {% empty %}
+        <li>В команде пока что нет игроков.</li>
+    {% endfor %}
+    </ul>
+
+{% endblock content %}

@@ -1,0 +1,19 @@
+{% extends "faceit_ml/base.html" %}
+
+{% block content %}
+
+    <p>Teams</p>
+    
+    <ul>
+        {% for team in teams %}
+            <li>
+                <a href="{% url 'faceit_ml:team' team.id %}">{{ team }}</a>
+            </li>
+        {% empty %}
+            <li>Пока что нет команд</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'faceit_ml:new_team' %}">Создать команду:</a>
+
+{% endblock content%}

@@ -1,0 +1,11 @@
+{% extends "faceit_ml/base.html" %}
+
+{% block content %}
+<p>Создать команду</p>
+<form action="{% url 'faceit_ml:new_team' %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button name="submit">Создать команду</button>
+</form>
+
+{% endblock content %}

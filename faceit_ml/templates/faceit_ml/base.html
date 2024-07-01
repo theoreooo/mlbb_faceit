@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faceit ML</title>
+    <style>
+        .navbar {
+            display: flex;
+            align-items: center;
+        }
+        .navbar form {
+            display: inline;
+        }
+        .navbar a, .navbar button {
+            margin-right: 10px;
+        }
+        .navbar button {
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            font: inherit;
+            padding: 0;
+        }
+        .logout-button {
+            margin-left: 5px; /* Adjust the value as needed */
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{% url 'faceit_ml:index' %}">Faceit ML</a>
+        <a href="{% url 'faceit_ml:teams' %}">Teams</a>
+        {% if user.is_authenticated %}
+            Hello, {{ user.username }}.
+            <form method="post" action="{% url 'users:logout' %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="logout-button">Выйти</button>
+            </form>
+        {% else %}
+            <a href="{% url 'users:register' %}">Регистрация</a> -
+            <a href="{% url 'users:login' %}">Войти</a>
+        {% endif %}
+    </div>
+
+    {% block content %}{% endblock content %}
+</body>
+</html>

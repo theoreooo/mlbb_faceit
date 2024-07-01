@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     # My apps
     'faceit_ml',
+    'users',
 
 
     'django.contrib.admin',
