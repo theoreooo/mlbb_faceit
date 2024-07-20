@@ -1,0 +1,58 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #2a2b38;
+    color: #c4c3ca;
+}
+
+.navbar a, .navbar button {
+    margin-right: 10px;
+    color: #ffeba7;
+}
+
+.navbar button {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    padding: 0;
+}
+
+.logout-button {
+    margin-left: 5px;
+}
+
+.btn {
+    border-radius: 4px;
+    height: 44px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: all 200ms linear;
+    padding: 0 30px;
+    letter-spacing: 1px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: none;
+    background-color: #ffeba7;
+    color: #102770;
+    box-shadow: 0 8px 24px 0 rgba(255, 235, 167, .2);
+}
+
+.btn:active,
+.btn:focus {
+    background-color: #102770;
+    color: #ffeba7;
+    box-shadow: 0 8px 24px 0 rgba(16, 39, 112, .2);
+}
+
+.btn:hover {
+    background-color: #102770;
+    color: #ffeba7;
+    box-shadow: 0 8px 24px 0 rgba(16, 39, 112, .2);
+}

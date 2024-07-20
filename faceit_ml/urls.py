@@ -7,7 +7,9 @@ from . import views
 app_name = 'faceit_ml'
 urlpatterns = [
     path('', views.index, name='index'),
-    path('teams/', views.teams, name='teams'),
-    path('teams/<int:team_id>/', views.team, name='team'),
-    path('new_team/', views.new_team, name='new_team'),
+    path('join_queue/', views.join_matchmaking_queue, name='join_queue'),
+    path('status/', views.matchmaking_status, name='matchmaking_status'),
+    path('cancel_queue/', views.cancel_matchmaking_queue, name='cancel_queue'),
+    path('results/', views.match_results, name='match_results'),
+    path('matchmaking/', views.matchmaking_view, name='matchmaking_view'),
 ]

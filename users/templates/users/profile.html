@@ -1,0 +1,45 @@
+{% extends "faceit_ml/base.html" %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock head %}
+{% block content %}
+<div class="section">
+    <div class="container">
+        <div class="row full-height justify-content-center">
+            <div class="col-12 text-center align-self-center py-5">
+                <div class="section pb-5 pt-5 pt-sm-2 text-center">
+                    <div class="card-3d-wrap mx-auto">
+                        <div class="card-3d-wrapper">
+                            <div class="card-front">
+                                <div class="center-wrap">
+                                    <div class="section text-center">
+                                        <div class="avatar">
+                                            {% if player.avatar %}
+                                                <img src="{{ player.avatar.url }}" alt="User Avatar">
+                                            {% else %}
+                                                <img src="{% static 'images/default-avatar.png' %}" alt="Default Avatar">
+                                            {% endif %}
+                                        </div>
+                                        <h4>User Profile</h4>
+                                        <div class="profile-info">
+                                            <p><i class="icon uil uil-user-circle"></i> <strong>Nickname:</strong> {{ player.username }}</p>
+                                            <p><i class="icon uil uil-calendar-alt"></i> <strong>Created Date:</strong> {{ player.date_joined }}</p>
+                                            <p><i class="icon uil uil-users-alt"></i> <strong>Team:</strong> {{ player.team }}</p>
+                                            <p><i class="icon uil uil-star"></i> <strong>Elo:</strong> {{ player.stats.elo }}</p>
+                                            <p><i class="icon uil uil uil-percentage"></i> <strong>Winrate:</strong> {{ player.stats.winrate }}%</p>
+                                            <p><i class="icon uil uil-notes"></i> <strong>Matches:</strong> {{ player.stats.matches }}</p>
+                                            <p><i class="icon uil uil uil-trophy"></i> <strong>Winstreak:</strong> {{ player.stats.winstreak }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

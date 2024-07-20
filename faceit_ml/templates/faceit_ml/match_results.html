@@ -1,0 +1,22 @@
+{% extends "faceit_ml/base.html" %}
+{% block content %}
+<div class="section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <h4 class="mb-4">Match Results</h4>
+                <ul class="list-group">
+                    {% for match in matches %}
+                    <li class="list-group-item">
+                        <h5>Match {{ match.id }}</h5>
+                        <p>Elo Difference: {{ match.elo_difference }}</p>
+                        <p>Captain Team 1: {{ match.captain_team1.username }} (Game ID: {{ match.captain_team1.game_account_id }})</p>
+                        <p>Captain Team 2: {{ match.captain_team2.username }} (Game ID: {{ match.captain_team2.game_account_id }})</p>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

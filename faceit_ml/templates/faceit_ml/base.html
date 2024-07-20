@@ -1,49 +1,63 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Faceit ML</title>
-    <style>
-        .navbar {
-            display: flex;
-            align-items: center;
-        }
-        .navbar form {
-            display: inline;
-        }
-        .navbar a, .navbar button {
-            margin-right: 10px;
-        }
-        .navbar button {
-            background: none;
-            border: none;
-            color: inherit;
-            cursor: pointer;
-            font: inherit;
-            padding: 0;
-        }
-        .logout-button {
-            margin-left: 5px; /* Adjust the value as needed */
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v2.1.9/css/unicons.css">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    {% block head %}
+    {% endblock head %}
 </head>
 <body>
     <div class="navbar">
-        <a href="{% url 'faceit_ml:index' %}">Faceit ML</a>
-        <a href="{% url 'faceit_ml:teams' %}">Teams</a>
-        {% if user.is_authenticated %}
-            Hello, {{ user.username }}.
-            <form method="post" action="{% url 'users:logout' %}" style="display: inline;">
-                {% csrf_token %}
-                <button type="submit" class="logout-button">Выйти</button>
-            </form>
-        {% else %}
-            <a href="{% url 'users:register' %}">Регистрация</a> -
-            <a href="{% url 'users:login' %}">Войти</a>
-        {% endif %}
+        <div>
+            <a href="{% url 'faceit_ml:index' %}">Faceit ML</a>
+            <a href="{% url 'users:teams' %}">Teams</a>
+            <a id="play-link" href="{% url 'faceit_ml:matchmaking_view' %}">Играть</a>
+        </div>
+        <div>
+            {% if user.is_authenticated %}
+                Hello, <a href="{% url 'users:profile' user.username %}">{{ user.username }}.</a>
+                <form method="post" action="{% url 'users:logout' %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-button">Выйти</button>
+                </form>
+            {% else %}
+                <a href="{% url 'users:register' %}">Регистрация</a>
+                <a href="{% url 'users:login' %}">Войти</a>
+            {% endif %}
+        </div>
     </div>
 
     {% block content %}{% endblock content %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const playLink = document.getElementById('play-link');
+    
+            playLink.addEventListener('click', function(event) {
+                event.preventDefault();  // Предотвращаем стандартное поведение ссылки
+    
+                fetch("{% url 'faceit_ml:matchmaking_status' %}", {
+                    method: 'GET',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.in_game) {
+                        window.location.href = "{% url 'faceit_ml:match_results' %}";
+                    } else {
+                        window.location.href = "{% url 'faceit_ml:matchmaking_view' %}";
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

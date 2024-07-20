@@ -2,7 +2,7 @@
 
 {% block content %}
 <p>Создать команду</p>
-<form action="{% url 'faceit_ml:new_team' %}" method="post">
+<form action="{% url 'users:new_team' %}" method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button name="submit">Создать команду</button>

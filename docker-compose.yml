@@ -1,0 +1,45 @@
+version: '3.9'
+
+services:
+  fml_postgres:
+    image: postgres:16
+    container_name: fml_postgres
+    volumes:
+      - ~/.pg/pg_data/fml:/var/lib/postgresql/data
+    env_file:
+      - .env
+  redis:
+    image: redis:latest
+    container_name: redis
+    
+  mlbb_faceit:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fm_docker
+    depends_on:
+      - fml_postgres
+    volumes:
+      - static_volume:/fm/static
+      - media_volume:/fm/media
+    env_file:
+      - .env
+    command: >
+      bash -c "python manage.py collectstatic --noinput && python manage.py migrate && gunicorn -b 0.0.0.0:8000 mlbb_faceit.wsgi:application"
+
+  nginx:
+    build:
+      context: ./docker/nginx/
+      dockerfile: Dockerfile
+    container_name: fm_nginx
+    volumes:
+      - static_volume:/fm/static
+      - media_volume:/fm/media
+    depends_on:
+      - mlbb_faceit
+    ports:
+      - "${NGINX_EXTERNAL_PORT}:80"
+
+volumes:
+  static_volume:
+  media_volume:

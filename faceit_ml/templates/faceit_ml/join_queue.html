@@ -1,0 +1,49 @@
+{% extends "faceit_ml/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h4 class="mb-4">Join Queue</h4>
+                <div id="join-queue-status"></div>
+                <button id="join-queue-btn" class="btn mt-4">Join Queue</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const joinQueueBtn = document.getElementById('join-queue-btn');
+        const statusDiv = document.getElementById('join-queue-status');
+
+        function updateQueueStatus() {
+            fetch("{% url 'faceit_ml:get_queue_status' %}")
+            .then(response => response.json())
+            .then(data => {
+                statusDiv.innerHTML = `<p>${data.message}</p>`;
+            });
+        }
+
+        joinQueueBtn.addEventListener('click', function() {
+            fetch("{% url 'faceit_ml:join_queue' %}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => response.json())
+            .then(data => {
+                updateQueueStatus();  // Обновляем статус после добавления в очередь
+            });
+        });
+
+        // Обновляем статус каждую секунду
+        setInterval(updateQueueStatus, 5000);
+    });
+</script>
+{% endblock content %}

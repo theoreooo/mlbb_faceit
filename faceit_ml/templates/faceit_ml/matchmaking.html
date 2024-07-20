@@ -1,0 +1,84 @@
+{% extends "faceit_ml/base.html" %}
+{% block content %}
+<div class="section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h4 class="mb-4">Matchmaking</h4>
+                <div id="join-queue-status"></div>
+                <button id="join-queue-btn" class="btn mt-4">Join Queue</button>
+                <button id="accept-match-btn" class="btn mt-4" style="display: none;">Accept Match</button>
+                <div id="timer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const joinQueueBtn = document.getElementById('join-queue-btn');
+        const acceptMatchBtn = document.getElementById('accept-match-btn');
+        const statusDiv = document.getElementById('join-queue-status');
+        const timerDiv = document.getElementById('timer');
+        
+        // WebSocket
+        const socket = new WebSocket('ws://' + window.location.hostname + ':8001/ws/matchmaking/');
+
+        socket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            if (data.message) {
+                alert(data.message); // Показываем уведомление
+                // Показываем таймер и кнопку принятия
+                acceptMatchBtn.style.display = 'block';
+                let timeLeft = 30;
+                const timer = setInterval(function() {
+                    if (timeLeft <= 0) {
+                        clearInterval(timer);
+                        // Таймер истек
+                        acceptMatchBtn.style.display = 'none';
+                    } else {
+                        timerDiv.textContent = `Time left: ${timeLeft}s`;
+                        timeLeft -= 1;
+                    }
+                }, 1000);
+            }
+        };
+
+        socket.onclose = function(e) {
+            console.error('WebSocket closed unexpectedly');
+        };
+
+        function updateQueueStatus() {
+            fetch("{% url 'faceit_ml:matchmaking_status' %}")
+            .then(response => response.json())
+            .then(data => {
+                if (data.in_queue) {
+                    joinQueueBtn.textContent = 'Cancel Search';
+                } else {
+                    joinQueueBtn.textContent = 'Join Queue';
+                }
+                statusDiv.innerHTML = `<p>${data.in_queue ? 'You are in the queue' : 'You are not in the queue'}</p>`;
+            });
+        }
+
+        joinQueueBtn.addEventListener('click', function() {
+            fetch("{% url 'faceit_ml:join_queue' %}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => response.json())
+            .then(data => {
+                updateQueueStatus();
+            });
+        });
+
+        // Обновляем статус каждую секунду
+        setInterval(updateQueueStatus, 5000);
+    });
+</script>
+
+{% endblock content %}
