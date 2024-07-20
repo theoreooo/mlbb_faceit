@@ -6,3 +6,7 @@ db.sqlite3
 media
 .env
 f_venv
+# Backup files # 
+*.bak 
+# celery 
+celerybeat-schedule.* 
