@@ -20,4 +20,5 @@ RUN find . -type f -print0 | xargs -0 dos2unix  # Преобразование �
 RUN pip install -r requirements.txt
 
 USER fm
-CMD ["gunicorn", "-b", "0.0.0.0:8001", "mlbb_faceit.wsgi:application"]
+CMD ["daphne", "-u", "/tmp/daphne.sock", "mlbb_faceit.asgi:application"]
+

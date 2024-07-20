@@ -1,5 +1,6 @@
 {% extends "faceit_ml/base.html" %}
 {% block content %}
+{% load static %}
 <div class="section">
     <div class="container">
         <div class="row justify-content-center">
@@ -14,20 +15,23 @@
     </div>
 </div>
 
+<audio id="notification-sound" src="{% static 'sounds/notification.wav' %}" preload="auto"></audio>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const joinQueueBtn = document.getElementById('join-queue-btn');
         const acceptMatchBtn = document.getElementById('accept-match-btn');
         const statusDiv = document.getElementById('join-queue-status');
         const timerDiv = document.getElementById('timer');
-        
+        const notificationSound = document.getElementById('notification-sound');
+
         // WebSocket
-        const socket = new WebSocket('ws://' + window.location.hostname + ':8001/ws/matchmaking/');
+        const socket = new WebSocket('ws://' + window.location.hostname + '/ws/matchmaking/');
 
         socket.onmessage = function(e) {
             const data = JSON.parse(e.data);
             if (data.message) {
-                alert(data.message); // Показываем уведомление
+                notificationSound.play(); // Проигрываем звуковое уведомление
                 // Показываем таймер и кнопку принятия
                 acceptMatchBtn.style.display = 'block';
                 let timeLeft = 30;
@@ -62,7 +66,10 @@
         }
 
         joinQueueBtn.addEventListener('click', function() {
-            fetch("{% url 'faceit_ml:join_queue' %}", {
+            const isInQueue = joinQueueBtn.textContent === 'Cancel Search';
+            const url = isInQueue ? "{% url 'faceit_ml:cancel_queue' %}" : "{% url 'faceit_ml:join_queue' %}";
+
+            fetch(url, {
                 method: 'POST',
                 headers: {
                     'X-CSRFToken': '{{ csrf_token }}',
@@ -78,6 +85,9 @@
 
         // Обновляем статус каждую секунду
         setInterval(updateQueueStatus, 5000);
+
+        // Инициализируем начальный статус
+        updateQueueStatus();
     });
 </script>
 
